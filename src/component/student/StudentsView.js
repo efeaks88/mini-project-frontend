@@ -1,6 +1,11 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import {
+	FaEdit,
+	FaEye,
+	FaTrashAlt,
+} from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const StudentsView = () => {
     const [students, setStudents] = useState([]);
@@ -21,6 +26,12 @@ const StudentsView = () => {
 		if (result.status === 200) {
 			setStudents(result.data);
 		}
+	};
+    const handleDelete = async (id) => {
+		await axios.delete(
+			`http://localhost:9191/controller/delete/${id}`
+		);
+		loadStudents();
 	};
     return (
         <section>
@@ -44,20 +55,28 @@ const StudentsView = () => {
                             <td>{student.email}</td>
                             <td>{student.department}</td>
                             <td className="mx-2">
-                                <button
-                                className="btn btn-info"
-                                >View</button>
-                                </td>
-                            <td className="mx-2">
-                            <button
-                                className="btn btn-warning"
-                                >Update</button>
-                            </td>
-                            <td className="mx-2">
-                            <button
-                                className="btn btn-danger"
-                                >Delete</button>
-                            </td>
+									<Link
+										to={`/student-profile/${student.id}`}
+										className="btn btn-info">
+										<FaEye />
+									</Link>
+								</td>
+								<td className="mx-2">
+									<Link
+										to={`/edit-student/${student.id}`}
+										className="btn btn-warning">
+										<FaEdit />
+									</Link>
+								</td>
+								<td className="mx-2">
+									<button
+										className="btn btn-danger"
+										onClick={() =>
+											handleDelete(student.id)
+										}>
+										<FaTrashAlt />
+									</button>
+								</td>
                         </tr>
 
                     ))}
